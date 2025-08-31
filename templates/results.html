@@ -1,0 +1,87 @@
+{% extends "base.html" %}
+{% block content %}
+  <div class="flex items-center justify-between">
+    <h1 class="text-3xl font-bold">Results – {{ scan.target }}</h1>
+    <a class="neon-btn" href="{{ url_for('report_pdf', scan_id=scan.id) }}">Download PDF Report</a>
+  </div>
+  <p class="text-sm text-gray-400 mb-4">Scanned at {{ scan.created_at.strftime('%Y-%m-%d %H:%M:%S') }} • Overall risk: <span class="badge {{ scan.overall_risk|lower }} overall-badge" data-risk="{{ scan.overall_risk }}">{{ scan.overall_risk }}</span></p>
+
+  <div class="grid md:grid-cols-3 gap-4 mb-6">
+    <div class="card">
+      <div class="font-semibold mb-2">Risk Distribution</div>
+      <canvas id="severityChart"></canvas>
+    </div>
+    <div class="card md:col-span-2">
+      <div class="font-semibold mb-2">Risk Heatmap (Likelihood × Impact)</div>
+      <div class="heatmap">
+        <table class="w-full text-center">
+          <thead>
+            <tr>
+              <th></th>
+              {% for i in range(1,6) %}<th>Impact {{ i }}</th>{% endfor %}
+            </tr>
+          </thead>
+          <tbody>
+            {% for l in range(1,6) %}
+            <tr>
+              <td class="font-semibold">Likelihood {{ l }}</td>
+              {% for i in range(1,6) %}
+                {% set count = heatmap[l-1][i-1] %}
+                <td class="cell {{ 'hm0' if count==0 else 'hm1' if count==1 else 'hm2' if count<=3 else 'hm3' }}">{{ count }}</td>
+              {% endfor %}
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="font-semibold mb-2">Findings</div>
+    <div class="overflow-x-auto">
+      <table class="w-full text-left">
+        <thead>
+          <tr>
+            <th>Severity</th>
+            <th>Category</th>
+            <th>Title</th>
+            <th>Likelihood</th>
+            <th>Impact</th>
+            <th>Score</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for f in findings %}
+          <tr class="row">
+            <td><span class="badge {{ f.severity|lower }}">{{ f.severity }}</span></td>
+            <td>{{ f.category }}</td>
+            <td class="max-w-xl"><div class="finding-card"><div class="font-semibold">{{ f.title }}</div><div class="desc mt-1">{{ f.description }}</div></div></td>
+            <td>{{ f.likelihood }}</td>
+            <td>{{ f.impact }}</td>
+            <td>{{ f.risk_score }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <script>
+    const counts = {{ counts|tojson }};
+    const ctx = document.getElementById('severityChart').getContext('2d');
+    new Chart(ctx, {
+      type: 'doughnut',
+      data: {
+        labels: Object.keys(counts),
+        datasets: [{
+          data: Object.values(counts)
+        }]
+      },
+      options: {
+        responsive: true,
+        plugins: { legend: { position: 'bottom' }, title: { display: false } }
+      }
+    });
+  </script>
+{% endblock %}

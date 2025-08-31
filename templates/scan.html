@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% block content %}
+  <h1 class="text-3xl font-bold mb-4">Run Security Scan</h1>
+  <div class="card">
+    <form method="post" class="space-y-4" id="scanForm">
+      <div>
+        <label class="label">Target (IP or hostname)</label>
+        <input class="input" type="text" name="target" placeholder="e.g., 127.0.0.1 or example.com" required>
+      </div>
+      <div>
+        <label class="label">Test Password (optional)</label>
+        <input class="input" type="text" name="password" placeholder="Enter a sample password to assess policy">
+        <p class="hint">Tip: Provide a sample password (not your real one) to assess password policy risk.</p>
+      </div>
+
+      <div class="flex items-center space-x-6">
+        <div class="card meter-wrap">
+          <div>
+            <div class="small-neon mb-2">Network Speed</div>
+            <canvas id="speedGauge" class="meter" width="220" height="120"></canvas>
+            <div class="text-center small-neon mt-2" id="speedText">-- Mbps</div>
+            <div class="text-center text-xs text-gray-400 mt-1">Measured before scan</div>
+          </div>
+        </div>
+
+        <div class="flex-1">
+          <div class="card finding-card">
+            <div class="small-neon mb-2">Scan Preview</div>
+            <p class="text-sm text-gray-300">When you click <strong>Start Scan</strong> the app will run a quick network speed test, scan common ports on the target, and analyze any provided sample password.</p>
+            <div class="mt-4 flex items-center space-x-2">
+              <span id="speedBadge" class="badge low">-- Mbps</span>
+              <button id="startScanBtn" class="neon-btn" type="button">Start Scan</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </form>
+  </div>
+{% endblock %}

@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Secure Sphere – Cybersecurity Risk Management</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body class="bg-gray-900 text-gray-100">
+  <nav class="bg-transparent sticky top-0 z-20">
+    <div class="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between">
+      <a href="{{ url_for('index') }}" class="text-2xl font-extrabold" style="text-shadow:0 0 12px rgba(255,45,149,0.6)"><span style="color:#ff9ed8">🛡️</span> <span style="color:#8be9ff">Secure Sphere</span></a>
+      <div class="space-x-4">
+        <a href="{{ url_for('index') }}" class="navlink">Dashboard</a>
+        <a href="{{ url_for('scan') }}" class="neon-btn">New Scan</a>
+      </div>
+    </div>
+  </nav>
+  <div class="liquid-bg" aria-hidden="true"></div>
+
+  <main class="max-w-6xl mx-auto px-4 py-6">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        <div class="space-y-2 mb-4">
+          {% for category, message in messages %}
+            <div class="p-3 rounded-lg {{'bg-red-100 text-red-800' if category=='error' else 'bg-green-100 text-green-800'}}">{{ message }}</div>
+          {% endfor %}
+        </div>
+      {% endif %}
+    {% endwith %}
+
+    {% block content %}{% endblock %}
+  </main>
+
+  <div id="flashOverlay" class="flash-overlay" aria-hidden="true"></div>
+  <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+</html>

@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% block content %}
+  <div class="flex items-center justify-between mb-4">
+    <h1 class="text-3xl font-bold">Risk Dashboard</h1>
+    <a href="{{ url_for('scan') }}" class="neon-btn">+ Run New Scan</a>
+  </div>
+
+  {% if scans %}
+    <div class="grid md:grid-cols-2 gap-4">
+      {% for s in scans %}
+        <div class="card">
+          <div class="flex items-center justify-between">
+            <div>
+              <div class="font-semibold text-lg">{{ s.target }}</div>
+              <div class="text-sm text-gray-400">{{ s.created_at.strftime('%Y-%m-%d %H:%M') }}</div>
+            </div>
+            <span class="badge {{ s.overall_risk|lower }}">{{ s.overall_risk }}</span>
+          </div>
+          <div class="mt-3">
+            <a class="link" href="{{ url_for('results', scan_id=s.id) }}">View Results →</a>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  {% else %}
+    <div class="card">
+      <p>No scans yet. Click “Run New Scan” to get started.</p>
+    </div>
+  {% endif %}
+{% endblock %}
