@@ -14,7 +14,7 @@ app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///Secure Sphere.db"
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 from plyer import notification
 
-def send_system_alert(scan_target:str, impact:str):
+'''def send_system_alert(scan_target:str, impact:str):
     phrases = {
         "Critical": "🚨 Critical risk detected!",
         "High": "⚠️ High impact vulnerabilities!",
@@ -26,7 +26,7 @@ def send_system_alert(scan_target:str, impact:str):
         message=phrases.get(impact, "Scan completed."),
         timeout=8,  # notification shows for 8 seconds
         app_name="Secure Sphere"
-    )
+    )'''
 
 db = SQLAlchemy(app)
 
@@ -174,7 +174,7 @@ def scan():
         db.session.flush()
         scan_obj.overall_risk = compute_overall_severity(findings) if findings else "Low"
         db.session.commit()
-        send_system_alert(scan_obj.target, scan_obj.overall_risk)
+        #send_system_alert(scan_obj.target, scan_obj.overall_risk)
         
         return redirect(url_for("results", scan_id=scan_obj.id))
         
